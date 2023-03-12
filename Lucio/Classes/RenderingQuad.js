@@ -5,7 +5,7 @@ export class RenderingQuad extends ShaderActor {
         gl.useProgram(this.getProgram());
         this.verticePositions = this.generateQuadVerticePositions();
         this.vertexBuffer = this.generateVertexBuffer(gl);
-        this.postRender(gl);
+        this.postUniform(gl);
     }
     /** Creates a vertex buffer, updates it and returns it */
     generateVertexBuffer(gl) {
@@ -16,7 +16,7 @@ export class RenderingQuad extends ShaderActor {
         /** Update buffer */
         gl.bindBuffer(gl.ARRAY_BUFFER, vertexBuffer);
         gl.bufferData(gl.ARRAY_BUFFER, this.verticePositions, gl.STATIC_DRAW);
-        // Send buffer to vertex shader.
+        /** Send buffer to vertex shader */
         let location = gl.getAttribLocation(this.getProgram(), "vertexPosition");
         gl.bindBuffer(gl.ARRAY_BUFFER, vertexBuffer);
         gl.enableVertexAttribArray(location);
@@ -39,16 +39,22 @@ export class RenderingQuad extends ShaderActor {
         /**                   X                           Y */
         return verticePositions;
     }
-    postRender(gl) {
+    /** Posts uniforms */
+    postUniform(gl) {
+        /** Focal uniform */
         let focalLengthLocation = gl.getUniformLocation(this.getProgram(), "focalLength");
         gl.uniform1f(focalLengthLocation, 3.0);
+        /** Far uniform */
         let farLocation = gl.getUniformLocation(this.getProgram(), "far");
         gl.uniform1f(farLocation, 1000.0);
+        /** Near uniform */
         let nearLocation = gl.getUniformLocation(this.getProgram(), "near");
         gl.uniform1f(nearLocation, 0.001);
+        /** Resolution uniforms */
         this.updateShaderResolution(gl);
         window.addEventListener("resize", this.updateShaderResolution.bind(this, gl));
     }
+    /** Updates the width and height uniforms on the shader */
     updateShaderResolution(gl) {
         let widthLocation = gl.getUniformLocation(this.getProgram(), "width");
         let heightLocation = gl.getUniformLocation(this.getProgram(), "height");
@@ -57,8 +63,10 @@ export class RenderingQuad extends ShaderActor {
     }
     /** Renders a quad */
     render(gl) {
+        /** Random seed uniform */
         let randomSeedLocation = gl.getUniformLocation(this.getProgram(), "randomSeed");
         gl.uniform1f(randomSeedLocation, Math.random() * 2 - 1);
+        /** Render the quad */
         gl.drawArrays(gl.TRIANGLE_FAN, 0, this.verticePositions.length / 2);
     }
 }

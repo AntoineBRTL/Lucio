@@ -178,5 +178,5 @@ void main()
     spheres[0] = Sphere(vec3(0.0, 0.0, 5.0), 0.5);
     spheres[1] = Sphere(vec3(0.0, -1000.5, 5.0), 1000.0);
 
-    fragColor = vec4(getPixelColor(vec3(0.0)), 1.0);
+    fragColor = vec4(sqrt(getPixelColor(vec3(0.0))), 1.0);
 }
